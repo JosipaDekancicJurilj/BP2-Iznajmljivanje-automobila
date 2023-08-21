@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Prikaz ugovora</title>
+        <!-- Bootstrap 5 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">        
+    </head>
+    <body>
+         <!-- Modal -->
+         <div class="modal fade" id="addClassModal" tabindex="-1" aria-labelledby="addClassModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClassModalLabel">Dodaj novi ugovor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addClassForm" method="POST" action="/classes/add">
+                            <div class="mb-3">
+                                <label for="cijena" class="form-label">Cijena</label>
+                                <input type="text" class="form-control" id="cijena" name="cijena">
+                            </div>
+                            <div class="mb-3">
+                                <label for="datum_pocetka" class="form-label">Datum početka</label>
+                                <input type="text" class="form-control" id="datum_pocetka" name="datum_pocetka">
+                            </div>
+                            <div class="mb-3">
+                                <label for="datum_zavrsetka" class="form-label">Datum završetka</label>
+                                <input type="text" class="form-conroll" id="datum_zavrsetka" name="datum_zavrsetka">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                        <button type="button" class="btn btn-primary" id="addClassBtn">Dodaj ugovor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editClassModal" tabindex="-1" aria-labelledby="editClassModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addClassModalLabel">Uredi ugovor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addClassForm" method="POST" action="/classes/add">
+                            <div class="mb-3">
+                                <label for="cijena" class="form-label">Cijena</label>
+                                <input type="hidden" class="form-control" id="ugovorIdEdit" name="ugovorIdEdit">
+                                <input type="text" class="form-control" id="cijenaEdit" name="cijenaEdit">
+                            </div>
+                            <div class="mb-3">
+                                <label for="datum_pocetka" class="form-label">Datum početka</label>
+                                <input type="text" class="form-control" id="datum_pocetkaEdit" name="datum_pocetkaEdit">
+                            </div>
+                            <div class="mb-3">
+                                <label for="datum_zavrsetka" class="form-label">Datum završetka</label>
+                                <input type="text" class="form-control" id="datum_zavrsetkaEdit" name="datum_zavrsetkaEdit">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+                        <button type="button" class="btn btn-primary" id="editClassBtn">Uredi ugovor</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row mt-3 mb-3">
+                <div class="col">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClassModal">
+                        Dodaj ugovor
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <table id="classesTbl" class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Cijena</th>
+                                <th scope="col">Datum početka</th>
+                                <th scope="col">datum završetka</th>
+                                <th scope="col">Akcije</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for class in classes %}
+                            <tr id="row-{{ class.ID_ugovora }}">
+                                <td>{{ class.ID_razreda }}</td>
+                                <td>{{ class.cijena }}</td>
+                                <td>{{ class.datum_pocetka }}</td>
+                                <td>{{ class.datum_zavretka }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger deleteClassBtn" data-id="{{ class.ID_ugovora }}">Briši</button>
+                                    <button class="btn btn-sm btn-default editClassBtn" data-id="{{ class.ID_ugovora }}">Uredi</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap 5 JavaScript Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js" integrity="sha512-oFOCo2/3DtjrJG4N27BjSLQWoiBv171sK6a+JiWjp/7agxC2nCUP358AqzxkBUb5jX8g6CYLPdSKQTbC0weCwA==" crossorigin="anonymous"></script>
+    
+        <script>
+            $(document).ready(function() {
+                var socket = io.connect('http://127.18.0.1:5000/kafka');
+
+                $(document).on('click', '.editClassBtn', function() {
+                    var id = $(this).data('id');
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/classes/" + id,
+                        success: function(data) {
+                            $('#cijenaEdit').val(data[0].cijena);
+                            $('#datum_pocetkaEdit').val(data[0].datum_pocetka);
+                            $('#datum_zavrestkaEdit').val(data[0].datum_zavrsetka);
+                            $('#ugovorIdEdit').val(data[0].ID_ugovora);
+                            $("#editClassModal").modal("show");
+                        },
+                        error: function(error) {
+                            console.error('Nastala je greška:', error);
+                        }
+                    });
+                });
+                $(document).on('click', '#editClassBtn',function(event) {
+                    event.preventDefault(); // Zaustavi formu 
+                    var formData = {
+                        ID_ugovora: $("#ugovorIdEdit").val(),
+                        cijena: $("#ocijenaEdit").val(),
+                        datum_pocetka: $("#datum_pocetkaEdit").val(),
+                        datum_zavrsetka: $("#datum_zavrsetkaEdit").val()
+                    };
+                    $.ajax({
+                        type: "PUT",
+                        url: "/classes/edit",
+                        data: formData,
+                        success: function(response) {
+                            console.log("Ugovor uređen!");
+                            $("#editClassModal").modal("hide");
+                        },
+                        error: function(error) {
+                            console.error("Nastala je greška:", error);
+                        }
+                    });
+                });
+                $(document).on('click', '#addClassBtn',function(event) {
+                    event.preventDefault(); // Zaustavi formu 
+                    var formData = {
+                        cijena: $("#cijena").val(),
+                        datum_pocetka: $("#datum_pocetka").val(),
+                        datum_zavrsetka: $("#datm_zavrestka").val()
+                    };
+                    $.ajax({
+                        type: "POST",
+                        url: "/classes/add",
+                        data: formData,
+                        success: function(response) {
+                            console.log("Ugovor dodan!");
+                        },
+                        error: function(error) {
+                            console.error("Nastala je greška:", error);
+                        }
+                    });
+                });
+
+                $(document).on('click', '.deleteClassBtn', function() {
+                    var row = $(this).closest('tr');
+                    var id = $(this).data('id');
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/classes/delete/" + id,
+                        success: function(data) {
+                            if (data.message) {
+                                row.remove();
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Nastala je greška:', error);
+                        }
+                    });
+                });
+
+                socket.on('connect', function() {
+                    console.log('Connected to SocketIO server');
+                });
+
+                socket.on('data', function(msg) {
+                    msg["razred"].forEach(function(razred) {
+                        var table = $('#classesTbl'); // Identifikator tablice
+                        var rowId = "row-" + ugovor.ID_ugovora;
+                        var existingRow = $('#' + rowId);
+                        
+                        if (existingRow.length) {
+                            // Ažuriraj postojeći redak
+                            existingRow.find('td:eq(1)').text(ugovor.cijena);
+                            existingRow.find('td:eq(2)').text(ugovor.datum_pocetka);
+                            existingRow.find('td:eq(3)').text(ugovor.datum_zavrsetka);
+                        } else {
+                            // Dodaj novi redak
+                            var row = $('<tr>').attr('id', rowId);
+                            row.append($('<td>').text(ugovor.ID_ugovora));
+                            row.append($('<td>').text(ugovor.cijena));
+                            row.append($('<td>').text(ugovor.datum_pocetka));
+                            row.append($('<td>').text(ugovor.datum_zavrsetka));
+                            
+                            var deleteBtn = $('<button>').addClass('btn btn-sm btn-danger deleteClassBtn')
+                                                        .attr('data-id', ugovor.ID_ugovora)
+                                                        .text('Briši');
+                            
+                            var deleteCell = $('<td>').append(deleteBtn);
+                            row.append(deleteCell);
+                            table.append(row);
+                        }
+                        
+                        $("#addClassModal").modal("hide");
+                    });
+                });
+
+            });
+
+        </script>
+    </body>
+</html>
